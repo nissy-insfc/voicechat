@@ -2,7 +2,7 @@
 var flag_speech = 0;
 var input_text;
 var answer_text;
-
+var flag_context = 0;
 
 //入力フキダシ生成
 function input_balloon(){
@@ -58,8 +58,22 @@ function vr_function() {
         input_text=rtnString;
         input_balloon();
 
-        //条件分岐　反応キーワードを設定
-        if (~rtnString.indexOf("お疲れ様")) {
+        if (flag_context == 1){
+          setTimeout(function(){
+            //応答語句を設定
+            answer_text="そんなことよりアナタのお名前教えてください";
+            //1000ミリ秒遅延して応答フキダシを表示
+            answer_balloon();},1000);
+            //音声認識再開
+            flag_context = 2;
+            vr_function();
+        } else if(flag_context == 2){
+          setTimeout(function(){
+            answer_text="「"+rtnString+"」さんですね！";
+            answer_balloon();},1000);
+            flag_context = 3;
+          vr_function();
+        } else if (~rtnString.indexOf("お疲れ様")) {
           //応答動作
           setTimeout(function(){
             //応答語句を設定
@@ -72,6 +86,12 @@ function vr_function() {
           setTimeout(function(){
             answer_text="はい。こんにちは！";
             answer_balloon();},1000);
+          vr_function();
+        } else if (~rtnString.indexOf("名前は") && flag_context < 2) {
+          setTimeout(function(){
+            answer_text="私は、ミライと言います！";
+            answer_balloon();},1000);
+            flag_context = 1;
           vr_function();
         }else {
           setTimeout(function(){
